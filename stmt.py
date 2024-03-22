@@ -3,10 +3,10 @@ from ifstmt import If
 from loop import Loop
 from inn import In
 from out import Out
+from globals import tokenizer
 
 class Stmt:
-    def __init__(self, tokenizer):
-        self.tokenizer = None
+    def __init__(self):
         self.assign = None
         self.if_stmt = None
         self.loop = None
@@ -14,29 +14,29 @@ class Stmt:
         self.out_stmt = None
 
     def parse_stmt(self):
-        token = self.tokenizer.getToken()  # Fetch the next token
+        token = tokenizer.getToken()  # Fetch the next token
         if token is None:
             return  # Return if there are no more tokens
         
         if token == 5:
             # If the token is 'if', parse if
-            self.if_stmt = If(self.tokenizer)
+            self.if_stmt = If()
             self.if_stmt.parse_if()
         elif token == 8:
             # If the token is 'while', parse loop
-            self.loop = Loop(self.tokenizer)
+            self.loop = Loop()
             self.loop.parse_loop()
         elif token == 10:
             # If the token is 'read', parse in
-            self.in_stmt = In(self.tokenizer)
+            self.in_stmt = In()
             self.in_stmt.parse_in()
         elif token == 11:
             # If the token is 'write', parse out
-            self.out_stmt = Out(self.tokenizer)
+            self.out_stmt = Out()
             self.out_stmt.parse_out()
-        elif token.isIdentifier():
+        elif token == 32:
             # parse assign
-            self.assign = Assign(self.tokenizer)
+            self.assign = Assign()
             self.assign.parse_assign()
         else:
             raise ValueError("Invalid statement")

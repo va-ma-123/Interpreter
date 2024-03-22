@@ -1,17 +1,17 @@
 from op import Op
+from globals import tokenizer
 
 class Fac:
-    def __init__(self, tokenizer):
-        self.tokenizer = tokenizer
+    def __init__(self):
         self.op = None
         self.fac = None
 
     def parse_fac(self):
-        self.op = Op(self.tokenizer)
+        self.op = Op()
         self.op.parse_op()
-        if self.tokenizer.get_token() == 24:
-            self.tokenizer.skip_token()
-            self.fac = Fac(self.tokenizer)
+        if tokenizer.getToken() == 24:
+            tokenizer.skipToken()
+            self.fac = Fac()
             self.fac.parse_fac()
 
     def print_fac(self):

@@ -1,26 +1,28 @@
 from id import Id
 import exp as Exp
+from globals import tokenizer
 
 class Op:
-    def __init__(self, tokenizer):
+    def __init__(self):
         self.value = None
         self.id = None
         self.exp = None
 
     def parse_op(self):
-        token = self.tokenizer.getToken()
-        if token.isdigit():
+        token = tokenizer.getToken()
+        if token == 31:
             self.value = int(token)
-        elif token.isalpha():
-            self.id = Id(self.tokenizer)
+            tokenizer.skipToken()
+        elif token ==32:
+            self.id = Id()
             self.id.parse_id()
         elif token == '(':
-            self.tokenizer.skipToken()
-            self.exp = Exp(self.tokenizer)
+            tokenizer.skipToken()
+            self.exp = Exp()
             self.exp.parse_exp()
-            if self.tokenizer.getToken() != ')':
+            if tokenizer.getToken() != ')':
                 raise ValueError("Expected ')")
-            self.tokenizer.skipToken()
+            tokenizer.skipToken()
 
     def print_op(self):
         if self.value is not None:

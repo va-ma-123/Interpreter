@@ -1,25 +1,26 @@
 from id import Id
 from exp import Exp
+from globals import tokenizer
 
 class Assign:
-    def __init__(self, tokenizer): # <assign> ::= <id> = <exp>;
-        self.tokenizer = tokenizer
+    def __init__(self): # <assign> ::= <id> = <exp>;
         self.id = None
         self.exp = None
 
     def parse_assign(self):
-        self.id = Id(self.tokenizer)
-        self.tokenizer.skipToken() # skip identifier
-        if self.tokenizer.getToken() != 14:
+        self.id = Id()
+        self.id.parse_id()
+        tokenizer.skipToken() # skip identifier
+        if tokenizer.getToken() != 14:
             print("ERROR: '=' expected")
             return
-        self.tokenizer.skipToken() # skip =
-        self.exp = Exp(self.tokenizer)
+        tokenizer.skipToken() # skip =
+        self.exp = Exp()
         self.exp.parse_exp()
-        if self.tokenizer.getToken() != 12:
+        if tokenizer.getToken() != 12:
             print("ERROR: ';' expected")
             return
-        self.tokenizer.skipToken() # skip ;
+        tokenizer.skipToken() # skip ;
 
     def print_assign(self):
         self.id.print_id()

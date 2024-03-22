@@ -1,34 +1,34 @@
 from decl_seq import DeclSeq
 from stmt_seq import StmtSeq
+from globals import tokenizer
 
 class Prog:
-    def __init__(self, tokenizer): #<prog> ::= program <decl seq> begin <stmt seq> end
-        self.tokenizer = tokenizer
+    def __init__(self): #<prog> ::= program <decl seq> begin <stmt seq> end
         self.ds = None
         self.ss = None
 
     def parse_prog(self): # Parse program    
-        if self.tokenizer.getToken() != 1:  # Check if the token is "program"
+        if tokenizer.getToken() != 1:  # Check if the token is "program"
             print("ERROR: Expected 'program'")
             return
         
-        self.tokenizer.skipToken()  # Skip "program"
-        self.ds = DeclSeq(self.tokenizer)
+        tokenizer.skipToken()  # Skip "program"
+        self.ds = DeclSeq()
         self.ds.parse_decl_seq() # Parse <decl seq>
 
         # Parse begin
-        if self.tokenizer.getToken() != 2:  # Check if the token is "begin"
+        if tokenizer.getToken() != 2:  # Check if the token is "begin"
             print("ERROR: Expected 'begin'")
             return
-        self.tokenizer.skipToken()  # Skip "begin"
-        self.ss = StmtSeq(self.tokenizer)
+        tokenizer.skipToken()  # Skip "begin"
+        self.ss = StmtSeq()
         self.ss.parse_stmt_seq() # Parse <stmt seq>
         
         # Parse "end"
-        if self.tokenizer.getToken() != 3:  # Check if the token is "end"
+        if tokenizer.getToken() != 3:  # Check if the token is "end"
             print("ERROR: Expected 'end'")
             return
-        self.tokenizer.skipToken()  # Skip "end"
+        tokenizer.skipToken()  # Skip "end"
 
     def print_prog(self):
         print("program", end="\n\t")

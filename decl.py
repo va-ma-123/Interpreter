@@ -1,30 +1,33 @@
 from id import Id
+from globals import tokenizer
+
 
 class Decl:
-    def __init__(self, tokenizer): #<decl> ::= int  <id list>;
-        self.tokenizer = tokenizer
+    def __init__(self): #<decl> ::= int  <id list>;
         self.ids = []
 
     def parse_decl(self): # Parse decl         
         # Check for "int"
-        if self.tokenizer.getToken() != 4: 
+        if tokenizer.getToken() != 4: 
             print("ERROR: Expected 'int'")
             return
-        self.tokenizer.skipToken() # skip "int"
+        tokenizer.skipToken() # skip "int"
 
-        id = Id(self.tokenizer)
-        #self.id_list = IDList(self.tokenizer)
+        id = Id()
+        #self.id_list = IDList(tokenizer)
         id.parse_id()
         self.ids.append(id)
-        while self.tokenizer.getToken() == 13:
-            self.tokenizer.skipToken() # skip ,
-            id = Id(self.tokenizer)
+        while tokenizer.getToken() == 13:
+            tokenizer.skipToken() # skip ,
+            id = Id()
             id.parse_id()
             self.ids.append(id)
-        if self.tokenizer.getToken() != 12: # Check for ; at end of decl
+        if tokenizer.getToken() != 12: # Check for ; at end of decl
+            print("Decl.py line 25 ")
+            print (tokenizer.getToken())
             print("ERROR: Expected ';'")
             return
-        self.tokenizer.skipToken() # skip ";"
+        tokenizer.skipToken() # skip ";"
 
     def print_decl(self):
         print("int ", end="")

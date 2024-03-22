@@ -1,20 +1,20 @@
 from stmt import Stmt
+from globals import tokenizer
 
 class StmtSeq:
-    def __init__(self, tokenizer): # <stmt seq>	::= <stmt> | <stmt> <stmt seq>
-        self.tokenizer = tokenizer
+    def __init__(self): # <stmt seq>	::= <stmt> | <stmt> <stmt seq>
         self.stmt = None
         self.stmt_seq = None
 
     def parse_stmt_seq(self):   # Parse stmt seq     
-        stmt = Stmt(self.tokenizer) 
+        stmt = Stmt() 
         stmt.parse_stmt() 
 
         # check for more stmt's
-        if self.tokenizer.getToken() == 3 or self.tokenizer.getToken() == 7:
+        if tokenizer.getToken() == 3 or tokenizer.getToken() == 7:
             # 3 = end, 7 = else, if end or else is next token, this is end of stmt seq
             return
-        self.stmt_seq = StmtSeq(self.tokenizer)
+        self.stmt_seq = StmtSeq()
 
     def print_stmt_seq(self):
         self.stmt.print_stmt()

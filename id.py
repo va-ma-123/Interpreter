@@ -1,21 +1,23 @@
+from globals import tokenizer
+
 class Id:
     eIds = [None] * 20
     idCount = 0
 
-    def __init__(self, tokenizer):
-        self.tokenizer = tokenizer
+    def __init__(self):
         self.value = None
         self.name = None
         self.declared = False
         self.initialized = False
 
     def parse_id(self):
-        idStr = self.tokenizer.getToken()
+        idStr = tokenizer.getToken()
         for id in Id.eIds:
             if id and id.name == idStr:
                 return id
+        tokenizer.skipToken() # Skip id
             
-        newId = Id(self.tokenizer)
+        newId = Id()
         newId.name = idStr
         Id.eIds[Id.idCount] = newId
         Id.idCount += 1

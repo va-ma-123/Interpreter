@@ -1,24 +1,24 @@
 from fac import Fac
+from globals import tokenizer
 
 class Exp:
-    def __init__(self, tokenizer):
-        self.tokenizer = tokenizer
+    def __init__(self):
         self.fac = None
         self.op = None
         self.exp = None
 
     def parse_exp(self):
-        self.fac = Fac(self.tokenizer)
+        self.fac = Fac()
         self.fac.parse_fac()
 
-        token = self.tokenizer.getToken()
+        token = tokenizer.getToken()
         if(token in (22,23)):
             if token == 22:
                 self.op = 0
             elif token == 23:
                 self.op = 1
-            self.tokenizer.skipToken()
-            self.exp = Exp(self.tokenizer)
+            tokenizer.skipToken()
+            self.exp = Exp()
             self.exp.parse_exp()
         
             
