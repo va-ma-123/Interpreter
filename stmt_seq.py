@@ -7,14 +7,15 @@ class StmtSeq:
         self.stmt_seq = None
 
     def parse_stmt_seq(self):   # Parse stmt seq     
-        stmt = Stmt() 
-        stmt.parse_stmt() 
+        self.stmt = Stmt() 
+        self.stmt.parse_stmt() 
 
         # check for more stmt's
         if tokenizer.getToken() == 3 or tokenizer.getToken() == 7:
             # 3 = end, 7 = else, if end or else is next token, this is end of stmt seq
             return
         self.stmt_seq = StmtSeq()
+        self.stmt_seq.parse_stmt_seq
 
     def print_stmt_seq(self):
         self.stmt.print_stmt()
