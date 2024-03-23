@@ -1,4 +1,3 @@
-from fac import Fac
 from globals import tokenizer
 
 class Exp:
@@ -8,6 +7,7 @@ class Exp:
         self.exp = None
 
     def parse_exp(self):
+        from fac import Fac
         self.fac = Fac()
         self.fac.parse_fac()
 

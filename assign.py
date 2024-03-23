@@ -9,8 +9,7 @@ class Assign:
 
     def parse_assign(self):
         self.id = Id()
-        self.id.parse_id()
-        tokenizer.skipToken() # skip identifier
+        self.id.parse_id_assign()
         if tokenizer.getToken() != 14:
             print("ERROR: '=' expected")
             return

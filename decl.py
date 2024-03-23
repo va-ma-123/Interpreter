@@ -15,12 +15,12 @@ class Decl:
 
         id = Id()
         #self.id_list = IDList(tokenizer)
-        id.parse_id()
+        id.parse_id_decl()
         self.ids.append(id)
         while tokenizer.getToken() == 13:
             tokenizer.skipToken() # skip ,
             id = Id()
-            id.parse_id()
+            id.parse_id_decl()
             self.ids.append(id)
         if tokenizer.getToken() != 12: # Check for ; at end of decl
             print("Decl.py line 25 ")

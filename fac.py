@@ -1,5 +1,6 @@
-from op import Op
+
 from globals import tokenizer
+import op
 
 class Fac:
     def __init__(self):
@@ -7,7 +8,8 @@ class Fac:
         self.fac = None
 
     def parse_fac(self):
-        self.op = Op()
+
+        self.op = op.Op()
         self.op.parse_op()
         if tokenizer.getToken() == 24:
             tokenizer.skipToken()

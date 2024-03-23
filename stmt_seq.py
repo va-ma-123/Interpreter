@@ -15,7 +15,7 @@ class StmtSeq:
             # 3 = end, 7 = else, if end or else is next token, this is end of stmt seq
             return
         self.stmt_seq = StmtSeq()
-        self.stmt_seq.parse_stmt_seq
+        self.stmt_seq.parse_stmt_seq()
 
     def print_stmt_seq(self):
         self.stmt.print_stmt()

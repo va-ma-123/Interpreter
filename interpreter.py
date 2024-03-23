@@ -1,6 +1,6 @@
 # from tokenizer import Scanner as Tokenizer
 from prog import Prog
-from globals import data , tokenizer
+from globals import data 
 import sys
 
 
@@ -15,13 +15,12 @@ if __name__ == "__main__":
     # data_file = sys.argv[2]
     # Create a singleton instance of the Tokenizer
     # tokenizer = Tokenizer(core_program_file)
-    data_file = "testdata/data.txt"
+    data_file = "testdata/5data.txt"
     
     # Open the file in read mode
     with open(data_file, 'r') as file:
         for line in file:
             data.append(int(line.strip()))
-
 
     # Create and initialize the Prog class with the singleton Tokenizer
     prog = Prog()
@@ -29,5 +28,5 @@ if __name__ == "__main__":
     # Parse the program
     prog.parse_prog()
     #prog.print_prog()
-    # prog.exec_prog()
+    prog.exec_prog()
 

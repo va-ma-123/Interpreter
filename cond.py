@@ -1,8 +1,8 @@
 from comp import Comp
+from globals import tokenizer
 
 class Cond:
-    def __init__(self, tokenizer):
-        self.tokenizer = tokenizer
+    def __init__(self):
         self.comp = None
         self.negation = False
         self.cond1 = None
@@ -10,29 +10,30 @@ class Cond:
         self.andor = None
 
     def parse_cond(self):
-        if self.tokenizer.getToken() == 15: # negation
+        if tokenizer.getToken() == 15: # negation
             self.negation = True
-            self.tokenizer.skipToken()
-            self.cond1 = Cond(self.tokenizer)
+            tokenizer.skipToken()
+            self.cond1 = Cond()
             self.cond1.parse_cond()
-        elif self.tokenizer.getToken() == 20: # comp
-            self.comp = Comp(self.tokenizer)
-        elif self.tokenizer.getToken() == 16:
-            self.tokenizer.skipToken() # skip [
-            self.cond1 = Cond(self.tokenizer)
+        elif tokenizer.getToken() == 20: # comp
+            self.comp = Comp()
+            self.comp.parse_comp()
+        elif tokenizer.getToken() == 16:
+            tokenizer.skipToken() # skip [
+            self.cond1 = Cond()
             self.cond1.parse_cond()
-            if self.tokenizer.getToken() not in (18,19):
+            if tokenizer.getToken() != 18 and tokenizer.getToken() != 19:
                 raise ValueError("Expected '&&' or '||'")
-            if(self.tokenizer.getToken() == 18):
+            if(tokenizer.getToken() == 18):
                 self.andor = 0
             else:
                 self.andor = 1
-            self.tokenizer.skipToken()
-            self.cond2 = Cond(self.tokenizer)
+            tokenizer.skipToken()
+            self.cond2 = Cond()
             self.cond2.parse_cond()
-            if self.tokenizer.getToken() != 17:
+            if tokenizer.getToken() != 17:
                 raise ValueError("Expected ']")
-            self.tokenizer.skipToken() # skip ]
+            tokenizer.skipToken() # skip ]
         else:
             print("ERROR: not a condition")
             return
