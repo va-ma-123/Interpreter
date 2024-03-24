@@ -1,5 +1,4 @@
-from globals import tokenizer
-from globals import data, data_idx
+from globals import data, data_idx, tokenizer
 
 
 class Out:
@@ -15,33 +14,41 @@ class Out:
             raise ValueError("Expected 'write'")
         tokenizer.skipToken() # skip write
 
-        id = Id()
-        id.parse_id_assign()
-        self.ids.append(id)
-
+        idName = tokenizer.idVal() #gets the name of the id
+        Id.parse_id_assign(idName)
+        self.ids.append(idName)
         while tokenizer.getToken() == 13:
             tokenizer.skipToken() # skip ,
-            id = Id()
-            id.parse_id_assign()
-            self.ids.append(id)
+            idName = tokenizer.idVal()
+            Id.parse_id_assign(idName)
+            self.ids.append(idName)
         if tokenizer.getToken() != 12:
             raise ValueError("Expected ';'") # Check for ; at end of decl
         tokenizer.skipToken() # skip ";"
 
     def exec_out(self):
-        for id in self.ids:
-            print(id.getName(), end ="")
+        for idName in self.ids:
+            print(idName, end ="")
             print(" = ")
-            print(id.getValue())
+            print(Id.getValue(idName))
+
+    # def exec_out(self):
+    #     try:
+    #         for id in self.ids:
+    #             print(id.getName(), end ="")
+    #             print(" = ")
+    #             print(id.getValue())
+    #     except ValueError as e:
+    #         print("Error in exec_out:", e)
 
     def print_out(self, indent=0):
             print("   " * (indent + 1), end="")
             print("write ", end="")
-            self.ids[0].print_id()
+            print(self.ids[0], end="")
             if len(self.ids) > 1:
                 for id in self.ids[1:]:
                     print(", ", end="")
-                    id.print_id()
+                    print(id, end="")
             print(";")
 
 class In:
@@ -53,70 +60,65 @@ class In:
 
         #print ("Inn, Start: ", token)
 
-        if token != 10:
+        if token != 10:  # Check for "read"
             raise ValueError("Expected 'read'")
         tokenizer.skipToken()
 
-        id = Id()
-        id.parse_id_assign()
-        self.ids.append(id)
+        idName = tokenizer.idVal() #gets the name of the id
+        Id.parse_id_assign(idName)
+        self.ids.append(idName)
         while tokenizer.getToken() != 12:
-            id = Id()
-            id.parse_id_assign()
-            self.ids.append(id)
-        tokenizer.skipToken()
-
-        # print ("Inn, End: ", token)
+            if tokenizer.getToken() != 13:
+                raise ValueError("Expected ','")
+            tokenizer.skipToken() # skip ","
+            idName = tokenizer.idVal() #gets the name of the id
+            Id.parse_id_assign(idName)
+            self.ids.append(idName)
+        tokenizer.skipToken() # skip ";"
 
     def exec_in(self):        
-        global data_idx
-        for id in self.ids:
+        global data_idx     #(if doesnt work in seperate class)
+        for idName in self.ids:
             val = data[data_idx]
-            print("Read Val = {}".format(val), end="")
-            id.setValue(val)
+            #print("Read Val = {}".format(val), end="") # Houssam
+            Id.setValue(idName,val)
             data_idx += 1
-        data_idx += 1
 
     def print_in(self, indent=0):
         print("   " * (indent + 1), end="")
         print("read ", end="")
-        self.ids[0].print_id()
+        print (self.ids[0], end="")
         if len(self.ids) > 1:
             for id in self.ids[1:]:
                 print(", ", end="")
-                id.print_id()
+                print(id, end="")
         print(";")
 
 class Id:
     eIds = {}
-    idCount = 0
 
     def __init__(self):
         self.value = None
         self.name = None
 
-    def is_declared(self):
-        return self.name in Id.eIds
+    @staticmethod
+    def is_declared(idName):
+        return idName in Id.eIds
 
-    def parse_id_decl(self):
-        idStr = tokenizer.idVal()
-        tokenizer.skipToken()
-        self.name = idStr
-        if self.is_declared():
-            raise ValueError("ID '{}' already declared".format(idStr))
+    @staticmethod
+    def parse_id_decl(idName):
+        tokenizer.skipToken() # Skip the ID
+        if Id.is_declared(idName):
+            raise ValueError("ID '{}' already declared".format(idName))
         else:
-            Id.eIds[idStr] = None
-            Id.idCount += 1
+            Id.eIds[idName] = None
 
-    def parse_id_assign(self):
-        idStr = tokenizer.idVal()
-        tokenizer.skipToken()
-        self.name = idStr
-        if not self.is_declared():
-            raise ValueError("ID '{}' not declared".format(idStr))
+    @staticmethod
+    def parse_id_assign(idName):
+        if not Id.is_declared(idName):
+            raise ValueError(f"ID '{idName}' not declared")
         # Initialize the value and mark as initialized
-        self.value = 0
-        Id.eIds[idStr] = self
+        tokenizer.skipToken() # Skip the ID
 
     def print_id(self):
         print(self.name, end='')
@@ -126,21 +128,22 @@ class Id:
         pass
     
     def getName(self):
-        if not self.name:
-            raise ValueError("ID name is not set")
+        if not self.is_declared():
+            raise ValueError("Variable '{}' is not declared".format(self.name))
         return self.name
 
-    def getValue(self):
-        if self.value is None:
-            raise ValueError("Variable '{}' is not initialized".format(self.name))
-        return self.value
+    @staticmethod
+    def getValue(idName):
+        # if self.value is None:
+        #     raise ValueError("Variable '{}' is not initialized".format(self.name))
+        #print("Getting value of ", idName, " = ", Id.eIds[idName])  Houssam
+        return Id.eIds[idName]
     
-    def setValue(self, val):
-        if not self.name:
-            raise ValueError("ID name is not declared")
-        if self.name not in Id.eIds:
-            raise ValueError("ID '{}' does not exist".format(self.name))
-        Id.eIds[self.name].value = val
+    @staticmethod
+    def setValue(idName, val):
+        if not Id.is_declared(idName):
+            raise ValueError("ID '{}' name is not declared".format(idName))
+        Id.eIds[idName] = val
 
 compops = ['!=','==','<','>','<=','>=']
 
@@ -169,9 +172,9 @@ class Comp:
     
     def exec_comp(self):
         val1 = self.op1.exec_op()
-        print("Val 1 : ",val1)
+        # print("Val 1 : ",val1)  Houssam
         val2 = self.op2.exec_op()
-        print("Val 2 : ",val2)
+        # print("Val 2 : ",val2)   Houssam
         operation = compops[self.compop]
         comp_expr = f"{val1}{operation}{val2}"
         return eval(comp_expr)
@@ -192,14 +195,14 @@ class Op:
     def parse_op(self):
 
         token = tokenizer.getToken()
-        if token == 31:
+        if token == 31: # int
             tokenVal = tokenizer.intVal()
             self.value = tokenVal
             tokenizer.skipToken()
-        elif token ==32:
-            self.id = Id()
-            self.id.parse_id_assign()
-        elif token == 20:
+        elif token ==32: # id
+            self.id = tokenizer.idVal()
+            Id.parse_id_assign(self.id)
+        elif token == 20: # (Exp)
             tokenizer.skipToken()
             self.exp = Exp()
             self.exp.parse_exp()
@@ -209,7 +212,7 @@ class Op:
 
     def exec_op(self):
         if self.id is not None:
-            return self.id.getValue()
+            return Id.getValue(self.id)
         elif self.exp is not None:
             return self.exp.exec_exp()
         else:
@@ -217,7 +220,7 @@ class Op:
         
     def print_op(self):
         if self.id is not None:
-            self.id.print_id()
+            print (self.id, end="")
         elif self.exp is not None:
             print("(", end="")
             self.exp.print_exp()
@@ -468,8 +471,10 @@ class Assign:
         self.exp = None
 
     def parse_assign(self):
-        self.id = Id()
-        self.id.parse_id_assign()
+        #self.id = Id()
+        self.id = tokenizer.idVal() #returns the name of the id
+
+        Id.parse_id_assign(self.id) #parse the id
         if tokenizer.getToken() != 14:
             print("ERROR: '=' expected")
             return
@@ -483,11 +488,11 @@ class Assign:
 
     def exec_assign(self):
         val = self.exp.exec_exp()
-        self.id.setValue(val)
+        Id.setValue(self.id,val)
 
     def print_assign(self, indent=0):
         print("   " * (indent + 1), end="")
-        self.id.print_id()
+        print (self.id, end="")
         print(" = ", end="")
         self.exp.print_exp()
         print(";")
@@ -567,15 +572,16 @@ class Decl:
             return
         tokenizer.skipToken() # skip "int"
 
-        id = Id()
+        idName = tokenizer.idVal() #gets the name of the id
         #self.id_list = IDList(tokenizer)
-        id.parse_id_decl()
-        self.ids.append(id)
+        Id.parse_id_decl(idName)
+        self.ids.append(idName)
         while tokenizer.getToken() == 13:
             tokenizer.skipToken() # skip ,
-            id = Id()
-            id.parse_id_decl()
-            self.ids.append(id)
+            idName = tokenizer.idVal() #gets the name of the id
+            #self.id_list = IDList(tokenizer)
+            Id.parse_id_decl(idName)
+            self.ids.append(idName)
         if tokenizer.getToken() != 12: # Check for ; at end of decl
             print("Decl.py line 25 ")
             print (tokenizer.getToken())
@@ -584,19 +590,20 @@ class Decl:
         tokenizer.skipToken() # skip ";"
 
     def exec_decl(self):
-        self.ids[0].exec_id()
-        if len(self.ids)>1:
-            for id in self.ids[1:]:
-                id.exec_id()
+        # #self.ids[0].exec_id()        Check if error
+        # if len(self.ids)>1:
+        #     for id in self.ids[1:]:
+        #         id.exec_id()
+        pass
 
     def print_decl(self, indent=0):
         print("   " * (indent + 1), end="")
         print("int ", end="")
-        print(self.ids[0].getName(), end="")
+        print(self.ids[0], end="")
         if len(self.ids) > 1:
-            for id in self.ids[1:]:
+            for idName in self.ids[1:]:
                 print(", ", end="")
-                id.print_id()
+                print(idName, end="")
         print(";")
 
 class StmtSeq:
@@ -702,5 +709,5 @@ if __name__ == "__main__":
     
     # Parse the program
     prog.parse_prog()
-    #prog.print_prog()
+    prog.print_prog()
     prog.exec_prog()

@@ -23,7 +23,7 @@ class Id:
 
     def parse_id_assign(self):
         idStr = tokenizer.idVal()
-        tokenizer.skipToken()
+        tokenizer.skipToken() # Skip the ID
         self.name = idStr
         if not self.is_declared():
             raise ValueError("ID '{}' not declared".format(idStr))
