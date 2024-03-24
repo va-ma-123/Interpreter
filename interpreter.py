@@ -28,5 +28,5 @@ if __name__ == "__main__":
     # Parse the program
     prog.parse_prog()
     #prog.print_prog()
-    prog.exec_prog()
+    #prog.exec_prog()
 
