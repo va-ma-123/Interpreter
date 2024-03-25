@@ -1,6 +1,8 @@
-from id import Id
-from exp import Exp
 from globals import tokenizer
+import sys
+import id
+import exp
+
 
 class Assign:
     def __init__(self): # <assign> ::= <id> = <exp>;
@@ -8,24 +10,33 @@ class Assign:
         self.exp = None
 
     def parse_assign(self):
-        self.id = Id()
-        self.id.parse_id_assign()
-        if tokenizer.getToken() != 14:
-            print("ERROR: '=' expected")
-            return
-        tokenizer.skipToken() # skip =
-        self.exp = Exp()
-        self.exp.parse_exp()
-        if tokenizer.getToken() != 12:
-            print("ERROR: ';' expected")
-            return
-        tokenizer.skipToken() # skip ;
-
-    def print_assign(self):
-        self.id.print_id()
-        print(" = ")
-        self.exp.print_exp()
+        
+        try:
+            self.id = tokenizer.idVal() #returns the name of the id
+            id.Id.parse_id_assign(self.id) #parse the id
+            if tokenizer.getToken() != 14:
+                raise ValueError("'=' Expected")
+            tokenizer.skipToken() # skip =
+            self.exp = exp.Exp()
+            self.exp.parse_exp()
+            id.Id.eIds[self.id].initialized = True
+            if tokenizer.getToken() != 12:
+                raise ValueError("';' Expected")
+            tokenizer.skipToken() # skip ;
+        except ValueError as e:
+            # Handle the error
+            print("Error in parse_assign:", e)
+            sys.exit(1)
+        
+        
 
     def exec_assign(self):
         val = self.exp.exec_exp()
-        self.id.setValue(val)
+        id.Id.setValue(self.id,val)
+
+    def print_assign(self, indent=0):
+        print("   " * (indent + 1), end="")
+        print (self.id, end="")
+        print(" = ", end="")
+        self.exp.print_exp()
+        print(";")

@@ -1,5 +1,4 @@
-
-from globals import tokenizer
+from interpreter import tokenizer
 import op
 
 class Fac:
@@ -16,14 +15,15 @@ class Fac:
             self.fac = Fac()
             self.fac.parse_fac()
 
-    def print_fac(self):
-        self.op.print_op()
-        if self.fac:
-            print(" * ", end="")
-            self.fac.print_fac()
 
     def exec_fac(self):
         result = self.op.exec_op()
         if self.fac:
             result *= self.fac.exec_fac()
         return result
+
+    def print_fac(self):
+        self.op.print_op()
+        if self.fac:
+            print(" * ", end="")
+            self.fac.print_fac()

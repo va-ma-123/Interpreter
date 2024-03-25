@@ -1,5 +1,5 @@
-from stmt import Stmt
 from globals import tokenizer
+import stmt
 
 class StmtSeq:
     def __init__(self): # <stmt seq>	::= <stmt> | <stmt> <stmt seq>
@@ -7,7 +7,7 @@ class StmtSeq:
         self.stmt_seq = None
 
     def parse_stmt_seq(self):   # Parse stmt seq     
-        self.stmt = Stmt() 
+        self.stmt = stmt.Stmt() 
         self.stmt.parse_stmt() 
 
         # check for more stmt's
@@ -17,13 +17,13 @@ class StmtSeq:
         self.stmt_seq = StmtSeq()
         self.stmt_seq.parse_stmt_seq()
 
-    def print_stmt_seq(self):
-        self.stmt.print_stmt()
-        if self.stmt_seq is not None:
-           self.stmt_seq.print_stmt_seq()
-
     def exec_stmt_seq(self):
         self.stmt.exec_stmt()
         if self.stmt_seq is not None:
             self.stmt_seq.exec_stmt_seq()
+
+    def print_stmt_seq(self, indent=2):
+        self.stmt.print_stmt(indent)
+        if self.stmt_seq:
+           self.stmt_seq.print_stmt_seq(indent)
         

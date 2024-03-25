@@ -1,4 +1,5 @@
 from globals import tokenizer
+import fac
 
 class Exp:
     def __init__(self):
@@ -7,8 +8,7 @@ class Exp:
         self.exp = None
 
     def parse_exp(self):
-        from fac import Fac
-        self.fac = Fac()
+        self.fac = fac.Fac()
         self.fac.parse_fac()
 
         token = tokenizer.getToken()
@@ -25,12 +25,13 @@ class Exp:
 
     def print_exp(self):
         self.fac.print_fac()
-        if self.op:
-            print(" ")
-            if self.op==0:
-                print("+")
+        if self.op is not None:
+            print(" ", end="")
+            if self.op == 0:
+                print("+", end="")
             else:
-                print("-")
+                print("-", end="")
+            print(" ", end="")
             self.exp.print_exp()
 
     def exec_exp(self):

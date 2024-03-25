@@ -1,5 +1,6 @@
-from comp import Comp
 from globals import tokenizer
+import sys
+import comp
 
 class Cond:
     def __init__(self):
@@ -10,33 +11,37 @@ class Cond:
         self.andor = None
 
     def parse_cond(self):
-        if tokenizer.getToken() == 15: # negation
-            self.negation = True
-            tokenizer.skipToken()
-            self.cond1 = Cond()
-            self.cond1.parse_cond()
-        elif tokenizer.getToken() == 20: # comp
-            self.comp = Comp()
-            self.comp.parse_comp()
-        elif tokenizer.getToken() == 16:
-            tokenizer.skipToken() # skip [
-            self.cond1 = Cond()
-            self.cond1.parse_cond()
-            if tokenizer.getToken() != 18 and tokenizer.getToken() != 19:
-                raise ValueError("Expected '&&' or '||'")
-            if(tokenizer.getToken() == 18):
-                self.andor = 0
+        try:
+            if tokenizer.getToken() == 15: # negation
+                self.negation = True
+                tokenizer.skipToken()
+                self.cond1 = Cond()
+                self.cond1.parse_cond()
+            elif tokenizer.getToken() == 20: # comp
+                self.comp = comp.Comp()
+                self.comp.parse_comp()
+            elif tokenizer.getToken() == 16:
+                tokenizer.skipToken() # skip [
+                self.cond1 = Cond()
+                self.cond1.parse_cond()
+                if tokenizer.getToken() != 18 and tokenizer.getToken() != 19:
+                    raise ValueError("Expected '&&' or '||'")
+                if(tokenizer.getToken() == 18):
+                    self.andor = 0
+                else:
+                    self.andor = 1
+                tokenizer.skipToken()
+                self.cond2 = Cond()
+                self.cond2.parse_cond()
+                if tokenizer.getToken() != 17:
+                    raise ValueError("Expected ']")
+                tokenizer.skipToken() # skip ]
             else:
-                self.andor = 1
-            tokenizer.skipToken()
-            self.cond2 = Cond()
-            self.cond2.parse_cond()
-            if tokenizer.getToken() != 17:
-                raise ValueError("Expected ']")
-            tokenizer.skipToken() # skip ]
-        else:
-            print("ERROR: not a condition")
-            return
+                raise ValueError("Expected a condition")
+        except ValueError as e:
+            # Handle the error
+            print("Error in parse_cond:", e)
+            sys.exit(1)
         
     def exec_cond(self):
         if self.comp is not None:
@@ -52,16 +57,17 @@ class Cond:
         if self.comp is not None:
             self.comp.print_comp()
         elif self.negation:
-            print("!") 
+            print("!", end="") 
             self.cond1.print_cond()
         elif self.andor == 0:
+            print("[", end="")
             self.cond1.print_cond() 
-            print(" && ") 
+            print(" && ", end="") 
             self.cond2.print_cond()
+            print("]", end="")
         else: 
+            print("[", end="")
             self.cond1.print_cond() 
-            print(" || ")
-            self.cond2.print_cond()
-        
-            
-        
+            print(" || ", end="")
+            self.cond2.print_cond() 
+            print("]", end="")        

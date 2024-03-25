@@ -1,5 +1,6 @@
-from id import Id
 from globals import tokenizer
+import sys
+import id
 
 
 class Decl:
@@ -8,38 +9,43 @@ class Decl:
 
     def parse_decl(self): # Parse decl         
         # Check for "int"
-        if tokenizer.getToken() != 4: 
-            print("ERROR: Expected 'int'")
-            return
-        tokenizer.skipToken() # skip "int"
+        try:
+            if tokenizer.getToken() != 4: 
+                raise ValueError("'int' Expected")
+            
+            tokenizer.skipToken() # skip "int"
 
-        id = Id()
-        #self.id_list = IDList(tokenizer)
-        id.parse_id_decl()
-        self.ids.append(id)
-        while tokenizer.getToken() == 13:
-            tokenizer.skipToken() # skip ,
-            id = Id()
-            id.parse_id_decl()
-            self.ids.append(id)
-        if tokenizer.getToken() != 12: # Check for ; at end of decl
-            print("Decl.py line 25 ")
-            print (tokenizer.getToken())
-            print("ERROR: Expected ';'")
-            return
-        tokenizer.skipToken() # skip ";"
-
-    def print_decl(self):
-        print("int ", end="")
-        self.ids[0].print_id()
-        if len(self.ids)>1:
-            for id in self.ids[1:]:
-                print(", ", end="")
-                id.print_id()
-        print("; ", end="\n")
+            idName = tokenizer.idVal() #gets the name of the id
+            #self.id_list = IDList(tokenizer)
+            id.Id.parse_id_decl(idName)
+            self.ids.append(idName)
+            while tokenizer.getToken() != 12:
+                if tokenizer.getToken() != 13:
+                    if tokenizer.getToken() == 32:                        
+                        raise ValueError("Expected ','")
+                    else:
+                        raise ValueError("Expected ';'") 
+                tokenizer.skipToken() # skip ,
+                idName = tokenizer.idVal() #gets the name of the id
+                #self.id_list = IDList(tokenizer)
+                id.Id.parse_id_decl(idName)
+                self.ids.append(idName)                    
+            
+            tokenizer.skipToken() # skip ";"
+        except ValueError as e:
+            # Handle the error
+            print("Error in parse_decl:", e)
+            sys.exit(1)
 
     def exec_decl(self):
-        self.ids[0].exec_id()
-        if len(self.ids)>1:
-            for id in self.ids[1:]:
-                id.exec_id()
+        pass
+
+    def print_decl(self, indent=0):
+        print("   " * (indent + 1), end="")
+        print("int ", end="")
+        print(self.ids[0], end="")
+        if len(self.ids) > 1:
+            for idName in self.ids[1:]:
+                print(", ", end="")
+                print(idName, end="")
+        print(";")

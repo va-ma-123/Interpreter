@@ -40,4 +40,4 @@ program
         write A, B, C;
         write X, Y, Z;
         write I;
-    end
+end

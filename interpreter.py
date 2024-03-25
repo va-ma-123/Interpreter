@@ -1,32 +1,23 @@
-# from tokenizer import Scanner as Tokenizer
-from prog import Prog
-from globals import data 
 import sys
-
-
+from globals import initialize_globals
+import prog
 
 if __name__ == "__main__":
-    # Check if two command-line arguments are provided
-    # if len(sys.argv) != 3:
-    #     print("Usage: py -3 parsetree.py <core_program_file> <data_file>")
-    #     sys.exit(1)
-    
-    # core_program_file = sys.argv[1]
-    # data_file = sys.argv[2]
-    # Create a singleton instance of the Tokenizer
-    # tokenizer = Tokenizer(core_program_file)
-    data_file = "testdata/5data.txt"
-    
-    # Open the file in read mode
-    with open(data_file, 'r') as file:
-        for line in file:
-            data.append(int(line.strip()))
+    if len(sys.argv) != 3:
+        print("Usage: python program.py <core_program_file> <data_file>")
+        sys.exit(1)
 
-    # Create and initialize the Prog class with the singleton Tokenizer
-    prog = Prog()
+    core_program_file = sys.argv[1]
+    data_file = sys.argv[2]
+    
+    initialize_globals(core_program_file, data_file)  # Initialize globals
+    
+    # Create an instance of the Prog class
+    prog_instance = prog.Prog()
     
     # Parse the program
-    prog.parse_prog()
-    #prog.print_prog()
-    #prog.exec_prog()
-
+    prog_instance.parse_prog()
+    print("\nProgram Execution Output:\n")
+    prog_instance.exec_prog()
+    print("\nPretty Print Program Output:\n")
+    prog_instance.print_prog()

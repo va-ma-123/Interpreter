@@ -1,5 +1,7 @@
-from cond import Cond
 from globals import tokenizer
+import sys
+import cond 
+import stmt_seq as ss
 
 class If:
     def __init__(self):
@@ -8,50 +10,39 @@ class If:
         self.ss2 = None
 
     def parse_if(self):
-        from stmt_seq import StmtSeq
-        if tokenizer.getToken() != 5:
-            print("ERROR: expected 'if'")
-            return
-        tokenizer.skipToken() # skip "if"
+        try: 
+            tokenizer.skipToken() # skip "if"
+            self.cond = cond.Cond()
+            self.cond.parse_cond()
 
-        #print("If: ", tokenizer.getToken())
+            if tokenizer.getToken() != 6:
+                raise ValueError("'then' Expected")
 
-        self.cond = Cond()
-        self.cond.parse_cond()
+            tokenizer.skipToken() # skip "then"
 
-        if tokenizer.getToken() != 6:
-            print("ERROR: expected 'then'")
-            return
-        tokenizer.skipToken() # skip "then"
+            self.ss1 = ss.StmtSeq()
+            self.ss1.parse_stmt_seq()
 
-        self.ss1 = StmtSeq()
-        self.ss1.parse_stmt_seq()
+            if tokenizer.getToken() == 7:
+                tokenizer.skipToken() # skip "else"
+                self.ss2 = ss.StmtSeq()
+                self.ss2.parse_stmt_seq()
+            
+            if tokenizer.getToken() != 3:
+                raise ValueError("'end' Expected")
+                
+            tokenizer.skipToken() # skip "end"
+            if tokenizer.getToken() != 12:
+                raise ValueError("';' Expected")
+                
+            tokenizer.skipToken() # skip ";"
+            #print("ENd If: ", tokenizer.getToken())
+        except ValueError as e:
+            # Handle the error
+            print("Error in parse_if:", e)
+            sys.exit(1)
 
-        if tokenizer.getToken() == 7:
-            tokenizer.skipToken() # skip "else"
-            self.ss2 = StmtSeq()
-            self.ss2.parse_stmt_seq()
-        
-        if tokenizer.getToken() != 3:
-            print("ERROR: expected 'end'")
-            return
-        tokenizer.skipToken() # skip "end"
-        if tokenizer.getToken() != 12:
-            print("ERROR: expected ';'")
-            return
-        tokenizer.skipToken() # skip ";"
-        #print("ENd If: ", tokenizer.getToken())
-
-    def print_if(self):
-        print("if", end=" ")
-        self.cond.print_cond()
-        print("then", end=" ")
-        self.ss1.print_stmt_seq()
-        if self.ss2 is not None:
-            print("else", end=" ")
-            self.ss2.print_stmt_seq()
-        print("end;")
-
+ 
     def exec_if(self):
         if self.cond.exec_cond():
             self.ss1.exec_stmt_seq()
@@ -60,3 +51,15 @@ class If:
             self.ss2.exec_stmt_seq()
             return
         
+    def print_if(self, indent=0):
+        print("   " * (indent + 1), end="")
+        print("if ", end="")
+        self.cond.print_cond()
+        print(" then")
+        self.ss1.print_stmt_seq(indent + 1)
+        if self.ss2:
+            print("   " * (indent + 1), end="")
+            print("else")
+            self.ss2.print_stmt_seq(indent + 1)
+        print("   " * (indent + 1), end="")
+        print("end;")

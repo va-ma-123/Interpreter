@@ -1,5 +1,5 @@
-from decl import Decl
 from globals import tokenizer
+import decl
 
 
 class DeclSeq:
@@ -8,25 +8,18 @@ class DeclSeq:
         self.decl_seq = None 
 
     def parse_decl_seq(self):   # Parse decl seq     
-        self.decl = Decl() 
+        self.decl = decl.Decl() 
         self.decl.parse_decl() 
 
-        # check for more decl's
-        # if tokenizer.getToken() == 2:
-        #     # 2 = begin, if keyword begin is next that means all the declarations are done
-        #     return
         if tokenizer.getToken() != 4:  # Check for "int"
             return
         self.decl_seq = DeclSeq()    
         self.decl_seq.parse_decl_seq()
 
-    def print_decl_seq(self):
-        self.decl.print_decl()
-        print(";\n")
-        if self.decl_seq is not None:
-            self.decl_seq.print_decl_seq()
-
     def exec_decl_seq(self):
-        self.decl.exec_decl()
+        pass
+
+    def print_decl_seq(self, indent=0):
+        self.decl.print_decl()
         if self.decl_seq is not None:
-            self.decl_seq.exec_decl_seq()
+            self.decl_seq.print_decl_seq(indent)

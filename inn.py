@@ -1,54 +1,49 @@
-from id import Id
-from globals import data, data_idx
-from globals import tokenizer
-
+from globals import tokenizer, data_arr, data_idx
+import sys
+import id
 
 class In:
     def __init__(self):
         self.ids = []
-
+        
     def parse_in(self):
-        token = tokenizer.getToken()
-
-        #print ("Inn, Start: ", token)
-
-        if token != 10:
-            raise ValueError("Expected 'read'")
-        tokenizer.skipToken()
-
-        id = Id()
-        id.parse_id_assign()
-        self.ids.append(id)
-        while tokenizer.getToken() != 12:
-            id = Id()
-            id.parse_id_assign()
-            self.ids.append(id)
-        tokenizer.skipToken()
-
-        # print ("Inn, End: ", token)
+        try:
+            tokenizer.skipToken() # skip read
+            idName = tokenizer.idVal() #gets the name of the id
+            id.Id.parse_id_assign(idName)
+            self.ids.append(idName)
+            id.Id.eIds[idName].initialized = True    
+            while tokenizer.getToken() != 12:
+                if tokenizer.getToken() != 13:
+                    if tokenizer.getToken() == 32:                        
+                        raise ValueError("Expected ','")
+                    else:
+                        raise ValueError("Expected ';'")              
+                tokenizer.skipToken() # skip ","
+                idName = tokenizer.idVal() #gets the name of the id
+                id.Id.parse_id_assign(idName)
+                self.ids.append(idName)
+                id.Id.eIds[idName].initialized = True    
+            tokenizer.skipToken() # skip ";"
+        except ValueError as e:
+            # Handle the error
+            print("Error in parse_in:", e)
+            sys.exit(1)
 
     def exec_in(self):        
-        global data_idx
-        # for id in self.ids:
-        #     if not data[data_idx]:
-        #         raise ValueError("not enough data provided")
-        #     id.setValue(data[data_idx])
-        # print("self.ids = ", len(self.ids))
-        # print("data = ", len(data))
-        # if len(self.ids) == len(data):
-        for id in self.ids:
-            val = data[data_idx]
-            print("Read Val = {}".format(val), end="")
-            id.setValue(val)
+        global data_idx     #(if doesnt work in seperate class)
+        for idName in self.ids:
+            val = data_arr[data_idx]
+            #print("Read Val = {}".format(val), end="") # Houssam
+            id.Id.setValue(idName,val)
             data_idx += 1
-        #print("Read Val", end="") # Debugging
-        data_idx += 1
 
-    def print_in(self):
+    def print_in(self, indent=0):
+        print("   " * (indent + 1), end="")
         print("read ", end="")
-        self.ids[0].print_id()
+        print (self.ids[0], end="")
         if len(self.ids) > 1:
             for id in self.ids[1:]:
-                print(", ")
-                id.print_id()
-        print()
+                print(", ", end="")
+                print(id, end="")
+        print(";")
