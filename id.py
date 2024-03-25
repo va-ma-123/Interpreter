@@ -18,7 +18,8 @@ class Id:
         return idName in Id.eIds
 
     @staticmethod
-    def parse_id_decl(idName):
+    def parse_id_decl(idName): # declare version of parse, only called by decl
+        # id can't be declared more than once
         try:
             if Id.is_declared(idName):
                 raise ValueError("ID '{}' already declared".format(idName))
@@ -33,8 +34,9 @@ class Id:
 
     @staticmethod
     def parse_id_assign(idName):
-        tokenizer.skipToken() # Skip the ID
+        # id can only be initialized or assigned a value if declared
         try:
+            tokenizer.skipToken() # Skip the ID
             if not Id.is_declared(idName):
                 raise ValueError("ID '{}' not declared".format(idName))
         except ValueError as e:
@@ -50,10 +52,11 @@ class Id:
                 print(id, end="")
 
     def exec_id(self):
+        # nothing to execute
         pass
     
 
-    @staticmethod
+    @staticmethod # helper method
     def getValue(idName):
         return Id.eIds[idName].value
     

@@ -3,7 +3,7 @@ import decl
 
 
 class DeclSeq:
-    def __init__(self): # <decl seq>	::= <decl> | <decl> <decl seq>
+    def __init__(self): # <decl seq> ::= <decl> | <decl> <decl seq>
         self.decl = None
         self.decl_seq = None 
 
@@ -11,12 +11,12 @@ class DeclSeq:
         self.decl = decl.Decl() 
         self.decl.parse_decl() 
 
-        if tokenizer.getToken() != 4:  # Check for "int"
-            return
-        self.decl_seq = DeclSeq()    
-        self.decl_seq.parse_decl_seq()
+        while tokenizer.getToken() == 4:  # Check for "int" which means more decl's
+            self.decl_seq = DeclSeq()    
+            self.decl_seq.parse_decl_seq()
 
     def exec_decl_seq(self):
+        # nothing to execute
         pass
 
     def print_decl_seq(self, indent=0):

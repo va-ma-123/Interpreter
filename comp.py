@@ -5,7 +5,7 @@ import op
 compops = ['!=','==','<','>','<=','>=']
 
 class Comp:
-    def __init__(self):
+    def __init__(self): # <comp> ::= (<op><comp_op><op>)
         self.op1 = None
         self.op2 = None
         self.compop = None

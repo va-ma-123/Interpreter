@@ -2,9 +2,9 @@ from globals import tokenizer
 import fac
 
 class Exp:
-    def __init__(self):
+    def __init__(self): # <exp> ::= <fac>|<fac>+<exp>|<fac>-<exp>
         self.fac = None
-        self.op = None
+        self.op = None # add, subtract or neither?
         self.exp = None
 
     def parse_exp(self):
@@ -17,11 +17,9 @@ class Exp:
                 self.op = 0
             elif token == 23:
                 self.op = 1
-            tokenizer.skipToken()
+            tokenizer.skipToken() # skip + or -
             self.exp = Exp()
             self.exp.parse_exp()
-        
-            
 
     def print_exp(self):
         self.fac.print_fac()

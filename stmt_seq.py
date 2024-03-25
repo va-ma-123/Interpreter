@@ -2,7 +2,7 @@ from globals import tokenizer
 import stmt
 
 class StmtSeq:
-    def __init__(self): # <stmt seq>	::= <stmt> | <stmt> <stmt seq>
+    def __init__(self): # <stmt seq> ::= <stmt> | <stmt> <stmt seq>
         self.stmt = None
         self.stmt_seq = None
 

@@ -4,7 +4,7 @@ import cond
 import stmt_seq as ss
 
 class If:
-    def __init__(self):
+    def __init__(self): # <if> ::= ...im not writing all that
         self.cond = None
         self.ss1 = None
         self.ss2 = None
@@ -23,6 +23,7 @@ class If:
             self.ss1 = ss.StmtSeq()
             self.ss1.parse_stmt_seq()
 
+            # else cannot be expected
             if tokenizer.getToken() == 7:
                 tokenizer.skipToken() # skip "else"
                 self.ss2 = ss.StmtSeq()
@@ -36,7 +37,6 @@ class If:
                 raise ValueError("';' Expected")
                 
             tokenizer.skipToken() # skip ";"
-            #print("ENd If: ", tokenizer.getToken())
         except ValueError as e:
             # Handle the error
             print("Error in parse_if:", e)

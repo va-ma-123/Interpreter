@@ -3,7 +3,7 @@ import sys
 import comp
 
 class Cond:
-    def __init__(self):
+    def __init__(self): # <cond> ::= <comp>|!<cond>|[<cond>&&<cond>]|[<cond>||<cond>]
         self.comp = None
         self.negation = False
         self.cond1 = None
@@ -26,11 +26,11 @@ class Cond:
                 self.cond1.parse_cond()
                 if tokenizer.getToken() != 18 and tokenizer.getToken() != 19:
                     raise ValueError("Expected '&&' or '||'")
-                if(tokenizer.getToken() == 18):
+                if(tokenizer.getToken() == 18): # if it is &&
                     self.andor = 0
-                else:
+                else: # ||
                     self.andor = 1
-                tokenizer.skipToken()
+                tokenizer.skipToken() # skip the && or the ||
                 self.cond2 = Cond()
                 self.cond2.parse_cond()
                 if tokenizer.getToken() != 17:

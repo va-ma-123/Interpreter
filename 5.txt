@@ -1,0 +1,43 @@
+program
+    int A, B, C;
+    int X, Y, Z;
+    int I;
+begin
+    A = 100;
+    B = 3;
+    C = 50;
+    I = 50;
+    read X;
+    read Y;
+    read Z;
+    while [[(A > X) || (A <= X)] && (I > 1)] loop
+        if (Y <= 7) then
+            B = A + 100;
+            Y = Z + B;
+        else
+            if (B < C) then
+                A = A - 10;
+            else
+                A = A + 10;
+            end;
+        end;
+        if ![((B + C * 3) < (((X - Y) + 10) - I)) || [(A != (B * C)) && (I < 25)]] then
+            A = I * 2;
+        else
+            A = A + 1;
+        end;
+        B = 20 - 5;
+        while [(B < C) && (B > 0)] loop
+            B = B + 1;
+            C = C - 1;
+            X = X + 5;
+            if (B == C) then
+                A = A * 2;
+            end;
+        end;
+        I = I - 1; 
+    end;
+    write A, B, C;
+    write X, Y, Z;
+    write I;
+end

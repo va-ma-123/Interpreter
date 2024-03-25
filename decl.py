@@ -15,22 +15,19 @@ class Decl:
             
             tokenizer.skipToken() # skip "int"
 
-            idName = tokenizer.idVal() #gets the name of the id
-            #self.id_list = IDList(tokenizer)
+            idName = tokenizer.idVal() # get id name, e.g ABC
             id.Id.parse_id_decl(idName)
             self.ids.append(idName)
             while tokenizer.getToken() != 12:
                 if tokenizer.getToken() != 13:
-                    if tokenizer.getToken() == 32:                        
+                    if tokenizer.getToken() == 32:  # if identifier, comma is missing in between             
                         raise ValueError("Expected ','")
-                    else:
+                    else: # if not identifier, ; is missing between self and a keyword
                         raise ValueError("Expected ';'") 
                 tokenizer.skipToken() # skip ,
-                idName = tokenizer.idVal() #gets the name of the id
-                #self.id_list = IDList(tokenizer)
+                idName = tokenizer.idVal()
                 id.Id.parse_id_decl(idName)
                 self.ids.append(idName)                    
-            
             tokenizer.skipToken() # skip ";"
         except ValueError as e:
             # Handle the error

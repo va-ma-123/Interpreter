@@ -28,8 +28,6 @@ class Assign:
             print("Error in parse_assign:", e)
             sys.exit(1)
         
-        
-
     def exec_assign(self):
         val = self.exp.exec_exp()
         id.Id.setValue(self.id,val)

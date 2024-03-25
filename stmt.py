@@ -7,19 +7,17 @@ import inn
 import out 
 
 class Stmt:
-    def __init__(self):
+    def __init__(self): # <stmt> = <assign>|<if>|<loop>|<in>|<out>
+        # these will change depending on which type it is
         self.assign = None
         self.if_stmt = None
         self.loop = None
         self.in_stmt = None
         self.out_stmt = None
 
-    def parse_stmt(self):
-        token = tokenizer.getToken()  # Fetch the next token
-        # if token is None:
-        #     return  # Return if there are no more tokens
-        
+    def parse_stmt(self):      
         try:
+            token = tokenizer.getToken()  # Fetch the next token  
             if token == 5:
                 # If the token is 'if', parse if
                 self.if_stmt = ifstmt.If()
@@ -62,7 +60,6 @@ class Stmt:
             self.out_stmt.exec_out()
 
     def print_stmt(self, indent=0):
-        # Updated method to print the statement
         if self.assign:
             self.assign.print_assign(indent)
         elif self.if_stmt:

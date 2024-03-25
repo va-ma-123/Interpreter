@@ -4,13 +4,12 @@ import id
 import exp
 
 class Op:
-    def __init__(self):
+    def __init__(self): #<op> ::= <int>|<id>|(<exp>)
         self.value = None
         self.id = None
         self.exp = None
 
     def parse_op(self):
-
         try:
             token = tokenizer.getToken()
             if token == 31: # int
@@ -23,12 +22,12 @@ class Op:
                     raise ValueError(f"ID '{self.id}' not initialized")
                 id.Id.parse_id_assign(self.id)
             elif token == 20: # (Exp)
-                tokenizer.skipToken()
-                self.exp = exp.Exp()
-                self.exp.parse_exp()
+                tokenizer.skipToken() # skip (
+                self.exp = exp.Exp() 
+                self.exp.parse_exp() # parse exp between the ()
                 if tokenizer.getToken() != 21:
                     raise ValueError("Expected ')")
-                tokenizer.skipToken()
+                tokenizer.skipToken() # skip )
         except ValueError as e:
             # Handle the error
             print("Error in parse_op:", e)

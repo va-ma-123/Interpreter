@@ -4,7 +4,7 @@ import cond
 import stmt_seq as ss
 
 class Loop:
-    def __init__(self): # <loop>	::=	while <cond> loop <stmt seq> end;
+    def __init__(self): # <loop> ::= while <cond> loop <stmt seq> end;
         self.cond = None
         self.ss = None
 

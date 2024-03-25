@@ -8,7 +8,7 @@ class Prog:
     def __init__(self): #<prog> ::= program <decl seq> begin <stmt seq> end
         self.ds = None
         self.ss = None
-
+    
     def parse_prog(self): # Parse program 
         try:
             if tokenizer.getToken() != 1:  # Check if the token is "program"

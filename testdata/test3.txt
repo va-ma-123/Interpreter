@@ -1,2 +1,0 @@
-program int X , Y;
-begin X = 25 ; Y = 16 ; write X ; end

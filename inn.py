@@ -3,21 +3,21 @@ import sys
 import id
 
 class In:
-    def __init__(self):
+    def __init__(self): # <in> ::= read <id list>;
         self.ids = []
         
     def parse_in(self):
         try:
-            tokenizer.skipToken() # skip read
-            idName = tokenizer.idVal() #gets the name of the id
+            tokenizer.skipToken() # skip "read"
+            idName = tokenizer.idVal() # gets the name of the id
             id.Id.parse_id_assign(idName)
             self.ids.append(idName)
             id.Id.eIds[idName].initialized = True    
             while tokenizer.getToken() != 12:
                 if tokenizer.getToken() != 13:
-                    if tokenizer.getToken() == 32:                        
+                    if tokenizer.getToken() == 32: # , missing between identifiers       
                         raise ValueError("Expected ','")
-                    else:
+                    else: # ; missing between id and non-id
                         raise ValueError("Expected ';'")              
                 tokenizer.skipToken() # skip ","
                 idName = tokenizer.idVal() #gets the name of the id
@@ -31,10 +31,9 @@ class In:
             sys.exit(1)
 
     def exec_in(self):        
-        global data_idx     #(if doesnt work in seperate class)
+        global data_idx    
         for idName in self.ids:
             val = data_arr[data_idx]
-            #print("Read Val = {}".format(val), end="") # Houssam
             id.Id.setValue(idName,val)
             data_idx += 1
 

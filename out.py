@@ -3,7 +3,7 @@ import sys
 import id
 
 class Out:
-    def __init__(self):
+    def __init__(self): # <out> ::= write <id list>;
         self.ids = []
 
     def parse_out(self):
