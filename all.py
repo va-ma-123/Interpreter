@@ -1,4 +1,4 @@
-import scanner
+import tokenizer
 import sys
 
 class Out:
@@ -746,7 +746,7 @@ if __name__ == "__main__":
 
     core_program_file = sys.argv[1]
     data_file = sys.argv[2]
-    tokenizer1 = scanner.Scanner(core_program_file)
+    tokenizer1 = tokenizer.Scanner(core_program_file)
 
     
     # Read data from the data file

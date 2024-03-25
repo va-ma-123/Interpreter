@@ -1,3 +1,0 @@
-begin end end program
-XYZ ABCD end
-123 456 begin
